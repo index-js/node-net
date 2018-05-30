@@ -1,0 +1,16 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "web framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "keywords": [
+    "server",
+    "web",
+    "framework"
+  ],
+  "author": "Mail@yanglin.me",
+  "license": "MIT"
+}

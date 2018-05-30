@@ -1,1 +1,1 @@
-# server
+# Simple server for Node.js
