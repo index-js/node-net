@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@jslang/server",
   "version": "1.0.0",
   "description": "web framework",
   "main": "index.js",
@@ -11,6 +11,6 @@
     "web",
     "framework"
   ],
-  "author": "Mail@yanglin.me",
+  "author": "i@yangl.in",
   "license": "MIT"
 }
