@@ -9,7 +9,7 @@ class Application extends EventEmitter{
     }
 
     onerror(err) {
-        console.error(err)
+        console.error('err:', err)
     }
 
     callback() {
@@ -19,17 +19,19 @@ class Application extends EventEmitter{
             let callback = this.callbacks
             let response = () => respond(req, res)
 
-            if (!this.listenerCount('error')) this.on('error', this.onerror);
+            if (!this.listenerCount('error')) this.on('error', this.onerror)
 
-            const next = () => {
+            const next = async () => {
                 const fn = middleware[index ++]
                 try {
-                    if (!fn) Promise.all(callback.map(fn => fn(req, res))).then(response).catch(e => {throw e})
-                    else fn(req, res, next)
+                    if(fn) {
+                        await fn.call(this, req, res, next)
+                        if (--index == 1) Promise.all(callback.map(fn => fn.call(this, req, res))).then(response).catch(e => { throw e })
+                    }
                 }
                 catch (e) {
                     this.emit('error', e)
-                    res.body = e
+                    res.body = 'error: ' + String(e)
                     res.statusCode = 500
                     response()
                 }
@@ -56,12 +58,12 @@ class Application extends EventEmitter{
 }
 
 function respond(req, res) {
-    if (!res.writable) return;
+    if (!res.writable) return
 
-    let body = String(res.body);
+    let body = String(res.body)
 
-    res['Content-Length'] = Buffer.byteLength(body);
-    res.end(body);
+    res['Content-Length'] = Buffer.byteLength(body)
+    res.end(body)
 }
 
 module.exports = Application
