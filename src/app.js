@@ -21,12 +21,17 @@ class Application extends EventEmitter{
 
             if (!this.listenerCount('error')) this.on('error', this.onerror)
 
-            const next = async () => {
-                const fn = middleware[index ++]
+            const next = async() => {
+                let fn = middleware[index ++]
                 try {
                     if(fn) {
                         await fn.call(this, req, res, next)
-                        if (--index == 1) Promise.all(callback.map(fn => fn.call(this, req, res))).then(response).catch(e => { throw e })
+                        if (--index == 1) Promise.all(callback.map(fn => fn.call(this, req, res))).then(data => {
+                            for (let item of data) {
+                                if (item) res.body = item
+                            }
+                            response()
+                        }).catch(e => { throw e })
                     }
                 }
                 catch (e) {

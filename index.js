@@ -2,18 +2,20 @@ const server = require('./src/app')
 const app = new server()
 
 // m1
-app.use(async (req, res, next) => {
+app.use(async function (req, res, next) {
     console.log(req.url)
+    setTimeout(() => {
+        console.log(this)
+    })
     await next()
     console.log('m1')
 }, function () {
-    throw 'error'
-    return 'result'
+    // return 'result'
 })
 
 // m2
 app.use(function (req, res, next) {
-    // throw 'base err'
+    // throw 'm2 err'
     console.log('m2')
     res.body = 'body'
     next()
@@ -26,6 +28,8 @@ app.use(async function (req, res, next) {
     console.log('m3')
     await next()
     console.log('m3-end')
+}, function() {
+    // throw 'error'
 })
 
 app.on('error', (err) => {
