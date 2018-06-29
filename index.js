@@ -1,16 +1,17 @@
 const server = require('./src/app')
 const app = new server()
+const assert = require('assert')
 
 // m1
 app.use(async function (req, res, next) {
     console.log(req.url)
     setTimeout(() => {
-        console.log(this)
+        assert(this, app, 'should equal')
     })
     await next()
     console.log('m1')
 }, function () {
-    // return 'result'
+    console.log('end')
 })
 
 // m2
