@@ -1,5 +1,5 @@
 {
-  "name": "trio.ooo",
+  "name": "@jslang/server",
   "version": "1.0.3",
   "description": "web framework",
   "main": "index.js",
