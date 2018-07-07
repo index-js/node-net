@@ -20,7 +20,7 @@ app.use(function (req, res, next) {
     console.log('m2')
     res.body = 'body'
     next()
-}, (req, res) => {
+}, function (req, res) {
     console.log('callback')
 })
 
