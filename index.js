@@ -11,13 +11,12 @@ app.use(async function (req, res, next) {
     await next()
     console.log('m1 await then')
 }, function () {
-    console.log('m1 end')
-    console.log()
+    console.log('m1 end\n')
 })
 
 // m2
 app.use(function (req, res, next) {
-    throw 'm2 err'
+    // throw 'm2 err'
     console.log('m2')
     res.body = 'body - ' + Date.now()
     next()
