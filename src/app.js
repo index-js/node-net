@@ -13,27 +13,24 @@ class Application extends EventEmitter{
     }
 
     callback() {
-        return (req, res) => {
-            let index = 0
-            let middleware = this.middlewares
-            let callback = this.callbacks
-            let response = () => respond(req, res)
+        if (!this.listenerCount('error')) this.on('error', this.onerror)
 
-            if (!this.listenerCount('error')) this.on('error', this.onerror)
+        return (req, res) => {
+            let index = -1
 
             const next = async() => {
-                let fn = middleware[index ++]
+                let fn = this.middlewares[++ index]
                 try {
                     if(fn) {
                         await fn.call(this, req, res, next)
-                        if (--index == 1) Promise.all(callback.map(fn => fn.call(this, req, res))).then(response).catch(e => { throw e })
+                        if (!--index) Promise.all(this.callbacks.map(fn => fn.call(this, req, res))).then(respond.call(this, req, res))
                     }
                 }
                 catch (e) {
                     this.emit('error', e)
                     res.body = 'error: ' + String(e)
                     res.statusCode = 500
-                    response()
+                    respond(req, res)
                 }
             }
 
@@ -46,7 +43,7 @@ class Application extends EventEmitter{
         return server.listen(...args)
     }
 
-    use(fn, cb = false) {
+    use(fn, cb) {
         if (typeof fn !== 'function') throw new Error('Middleware must be a function!')
         if (isArrow(fn)) throw new Error('Middleware can not use arrow function!')
         this.middlewares.push(fn)

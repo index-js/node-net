@@ -4,24 +4,25 @@ const assert = require('assert')
 
 // m1
 app.use(async function (req, res, next) {
-    console.log(req.url)
+    console.log(req.url, 'm1')
     setTimeout(() => {
         assert(this, app, 'should equal')
     })
     await next()
-    console.log('m1')
+    console.log('m1 await then')
 }, function () {
-    console.log('end')
+    console.log('m1 end')
+    console.log()
 })
 
 // m2
 app.use(function (req, res, next) {
-    // throw 'm2 err'
+    throw 'm2 err'
     console.log('m2')
-    res.body = 'body'
+    res.body = 'body - ' + Date.now()
     next()
 }, function (req, res) {
-    console.log('callback')
+    console.log('m2 callback')
 })
 
 // m3
@@ -30,7 +31,7 @@ app.use(async function (req, res, next) {
     await next()
     console.log('m3-end')
 }, function() {
-    // throw 'error'
+    console.log('m3 callback begin')
 })
 
 app.on('error', (err) => {
