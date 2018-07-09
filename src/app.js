@@ -48,12 +48,12 @@ class Application extends EventEmitter{
 
     use(fn, cb = false) {
         if (typeof fn !== 'function') throw new Error('Middleware must be a function!')
-        if (/^\(/.test(fn)) throw new Error('Middleware can not use arrow function!')
+        if (/^async? \(/.test(fn)) throw new Error('Middleware can not use arrow function!')
         this.middlewares.push(fn)
 
         if (cb){
             if (typeof fn !== 'function') throw new Error('Callback must be a function!')
-            if (/^\(/.test(cb)) throw new Error('Callback can not use arrow function!')
+            if (/^async? \(/.test(cb)) throw new Error('Callback can not use arrow function!')
             this.callbacks.unshift(cb)
         }
 
