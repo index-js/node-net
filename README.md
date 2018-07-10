@@ -19,16 +19,16 @@ const server = require('node-net')
 const app = new server()
 
 // response
-app.use(async function(req, res) {
-  res.body = 'Hello World';
+app.use(async function() {
+  this.body = 'Hello World';
 });
  
 app.listen(3000);
 ```
 Middleware
 ``` js
-app.use(async function (req, res, next) {
-    console.log(req.url)
+app.use(async function (next) {
+    console.log(this.url)
     setTimeout(() => {
         assert(this, app, 'should equal')
     })
@@ -41,8 +41,15 @@ app.use(async function (req, res, next) {
 Error Handler
 ``` js
 app.on('error', (err) => {
+    throw new Error(err)
     console.log('err: ' + err)
 })
+```
+[Cookies](https://www.npmjs.com/package/cookies)
+``` js
+app.keys = '' // Use Keygrip
+this.cookies.set( name, [ value ], [ options ] )
+this.cookies.get( name, [ options ] )
 ```
 
 

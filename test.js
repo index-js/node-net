@@ -5,6 +5,7 @@ const assert = require('assert')
 // m1
 app.use(async function (next) {
     console.log(this.url, 'm1')
+    this.cookies.set('55', 555)
     setTimeout(() => {
         assert(this, app, 'should equal')
     })
@@ -18,6 +19,7 @@ app.use(async function (next) {
 app.use(function (next) {
     // throw 'm2 err'
     console.log('m2')
+    this.cookies.get('55')
     this.body = '<body> - ' + Date.now()
     this.status = 200
     next()
@@ -34,6 +36,7 @@ app.use(async function (next) {
     console.log('m3 callback begin')
 })
 
+app.keys = '12345'
 app.on('error', (err) => {
     throw new Error(err)
     console.log('err: ' + err)

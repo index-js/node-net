@@ -48,7 +48,6 @@ class Application extends EventEmitter{
         return (req, res) => {
             let index = -1
             const ctx = this.createContext(req, res)
-            res.statusCode = 404
 
             const next = async() => {
                 const fn = this.middlewares[++ index]
@@ -60,13 +59,14 @@ class Application extends EventEmitter{
                     }
                 }
                 catch (e) {
+                    ctx.status = 500
+                    ctx.body = 'error: ' + String(e)
+                    respond.call(ctx)
                     this.emit('error', e)
-                    res.body = 'error: ' + String(e)
-                    res.statusCode = 500
-                    respond(req, res)
                 }
             }
 
+            ctx.status = 404
             return next()
         }
     }
