@@ -4,6 +4,7 @@ const EventEmitter = require('events')
 const http = require('http')
 const delegate = require('delegates')
 const cookies = require('cookies')
+const statuses = require('statuses')
 
 const context = require('./context')
 const request = require('./request')
@@ -99,9 +100,33 @@ function respond() {
     const res = this.res
     // if (!res.writable) return
 
-    const body = String(this.body)
+    let body = this.body
+    let code = this.status
 
-    this.response.set('Content-Length', Buffer.byteLength(body))
+    if (statuses.empty[code]) {
+        this.body = null
+        return res.end()
+    }
+
+    if (Buffer.isBuffer(body)) return res.end(body)
+
+    if ('HEAD' === this.method) {
+        this.length = String(body).length
+        return res.end()
+    }
+
+    if (null == body) {
+        body = ctx.message || String(code)
+        this.type = 'text'
+        this.length = Buffer.byteLength(body)
+        return res.end(body)
+    }
+
+    if ('string' === typeof body) return res.end(body)
+    if (body instanceof Stream) return body.pipe(res)
+
+    body = JSON.stringify(body)
+    this.length = Buffer.byteLength(body)
     res.end(body)
 }
 

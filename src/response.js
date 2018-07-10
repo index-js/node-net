@@ -1,5 +1,8 @@
 'use strict';
 
+const getType = require('mime-types').contentType
+const statuses = require('statuses')
+
 module.exports = {
 	get headers() {
 		return this.res.getHeaders
@@ -21,14 +24,15 @@ module.exports = {
 		if (this.headerSent) return
 
 	    this.res.statusCode = code
-	    if (this.body && (code < 200 || code > 600)) this.body = null
+		if (this.req.httpVersionMajor < 2) this.message = statuses[code]
+	    if (this.body && statuses.empty[code]) this.body = null
 	},
 	get type () {
 		let type = this.get('Content-Type')
 		return type.split(';')[0]
 	},
 	set type (val) {
-		if (val) {
+		if (val = getType(val)) {
 			this.set('Content-Type', val)
 		} else {
 			this.remove('Content-Type')
