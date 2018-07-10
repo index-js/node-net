@@ -12,5 +12,9 @@
     "framework"
   ],
   "author": "i@yangl.in",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "cookies": "^0.7.1",
+    "delegates": "^1.0.0"
+  }
 }

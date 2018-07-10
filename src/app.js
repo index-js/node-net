@@ -1,15 +1,45 @@
-const Http = require('http')
+'use strict';
+
 const EventEmitter = require('events')
+const http = require('http')
+const delegate = require('delegates')
+const cookies = require('cookies')
+
+const context = require('./context')
+const request = require('./request')
+const response = require('./response')
 
 class Application extends EventEmitter{
     constructor() {
         super()
         this.middlewares = []
         this.callbacks = []
+        this.context = Object.create(context)
+        this.request = Object.create(request)
+        this.response = Object.create(response)
     }
 
     onerror(err) {
         console.error('err:', err)
+    }
+
+    createContext(req, res) {
+        const context = Object.create(this.context)
+
+        let request = context.request = Object.create(this.request)
+        let response = context.response = Object.create(this.response)
+
+        context.app = request.app = response.app = this
+        context.req = request.req = response.req = req
+        context.res = request.res = response.res = res
+
+        context.cookies = new cookies(req, res, {
+            key: this.keys,
+            secure: request.secure
+        })
+        context.state = {}
+
+        return context
     }
 
     callback() {
@@ -17,13 +47,16 @@ class Application extends EventEmitter{
 
         return (req, res) => {
             let index = -1
+            const ctx = this.createContext(req, res)
+            res.statusCode = 404
 
             const next = async() => {
-                let fn = this.middlewares[++ index]
+                const fn = this.middlewares[++ index]
                 try {
                     if(fn) {
-                        await fn.call(this, req, res, next)
-                        if (!--index) Promise.all(this.callbacks.map(fn => fn.call(this, req, res))).then(respond.call(this, req, res))
+                        await fn.call(ctx, next)
+                        console.log(index)
+                        if (!--index) Promise.all(this.callbacks.map(fn => fn.call(ctx))).then(respond.call(ctx))
                     }
                 }
                 catch (e) {
@@ -39,7 +72,7 @@ class Application extends EventEmitter{
     }
 
     listen(...args) {
-        const server = Http.createServer(this.callback())
+        const server = http.createServer(this.callback())
         return server.listen(...args)
     }
 
@@ -62,12 +95,13 @@ function isArrow(functionObject) {
     return /^(async *)?\(/.test(functionObject)
 }
 
-function respond(req, res) {
-    if (!res.writable) return
+function respond() {
+    const res = this.res
+    // if (!res.writable) return
 
-    let body = String(res.body)
+    const body = String(this.body)
 
-    res['Content-Length'] = Buffer.byteLength(body)
+    this.response.set('Content-Length', Buffer.byteLength(body))
     res.end(body)
 }
 
