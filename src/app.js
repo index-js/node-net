@@ -48,15 +48,16 @@ class Application extends EventEmitter{
 
         return (req, res) => {
             let index = -1
-            const ctx = this.createContext(req, res)
+            let range = 0
 
             const next = async() => {
                 const fn = this.middlewares[++ index]
                 try {
                     if(fn) {
                         await fn.call(ctx, next)
-                        console.log(index)
-                        if (!--index) Promise.all(this.callbacks.map(fn => fn.call(ctx))).then(respond.call(ctx))
+
+                        if (++ range != this.middlewares.length) next()  // Without using next, auto append
+                        else Promise.all(this.callbacks.map(fn => fn.call(ctx))).then(respond.call(ctx))
                     }
                 }
                 catch (e) {
@@ -67,7 +68,9 @@ class Application extends EventEmitter{
                 }
             }
 
+            const ctx = this.createContext(req, res)
             ctx.status = 404
+            
             return next()
         }
     }
@@ -116,7 +119,7 @@ function respond() {
     }
 
     if (null == body) {
-        body = ctx.message || String(code)
+        body = this.message || String(code)
         this.type = 'text'
         this.length = Buffer.byteLength(body)
         return res.end(body)

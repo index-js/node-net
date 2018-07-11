@@ -22,7 +22,7 @@ app.use(function (next) {
     this.cookies.get('55')
     this.body = '<body> - ' + Date.now()
     this.status = 200
-    next()
+    // next()
 }, function (req, res) {
     console.log('m2 callback')
 })
@@ -30,7 +30,7 @@ app.use(function (next) {
 // m3
 app.use(async function (next) {
     console.log('m3')
-    await next()
+    // await next()
     console.log('m3-end')
 }, function() {
     console.log('m3 callback begin')
@@ -38,8 +38,8 @@ app.use(async function (next) {
 
 app.keys = '12345'
 app.on('error', (err) => {
-    throw new Error(err)
     console.log('err: ' + err)
+    throw new Error(err)
 })
 
 app.listen(3000, () => {
