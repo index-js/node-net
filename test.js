@@ -9,7 +9,7 @@ app.use(async function (next) {
     setTimeout(() => {
         assert(this, app, 'should equal')
     })
-    await next()
+    // await next()
     console.log('m1 await then')
 }, function () {
     console.log('m1 end\n')
@@ -22,7 +22,7 @@ app.use(function (next) {
     this.cookies.get('55')
     this.body = '<body> - ' + Date.now()
     this.status = 200
-    // next()
+    next()
 }, function (req, res) {
     console.log('m2 callback')
 })
@@ -30,7 +30,7 @@ app.use(function (next) {
 // m3
 app.use(async function (next) {
     console.log('m3')
-    // await next()
+    await next()
     console.log('m3-end')
 }, function() {
     console.log('m3 callback begin')

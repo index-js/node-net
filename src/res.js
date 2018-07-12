@@ -1,6 +1,5 @@
 'use strict';
 
-const getType = require('mime-types').contentType
 const statuses = require('statuses')
 
 module.exports = {
@@ -32,7 +31,7 @@ module.exports = {
 		return type.split(';')[0]
 	},
 	set type (val) {
-		if (val = getType(val)) {
+		if (val) {
 			this.set('Content-Type', val)
 		} else {
 			this.remove('Content-Type')

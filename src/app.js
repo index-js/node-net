@@ -2,13 +2,12 @@
 
 const EventEmitter = require('events')
 const http = require('http')
-const delegate = require('delegates')
 const cookies = require('cookies')
 const statuses = require('statuses')
 
 const context = require('./context')
-const request = require('./request')
-const response = require('./response')
+const request = require('./req')
+const response = require('./res')
 
 class Application extends EventEmitter{
     constructor() {
