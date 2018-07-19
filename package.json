@@ -4,18 +4,27 @@
   "description": "web framework",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/index-js/node-net.git"
   },
   "keywords": [
     "server",
     "web",
     "framework"
   ],
-  "author": "i@yangl.in",
+  "author": "Yanglin(mail@yanglin.me)",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/index-js/node-net/issues"
+  },
+  "homepage": "http://jslang.org",
   "dependencies": {
     "cookies": "^0.7.1",
     "delegates": "^1.0.0",
     "statuses": "^1.5.0"
-  }
+  },
+  "devDependencies": {}
 }
