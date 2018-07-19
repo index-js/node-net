@@ -1,6 +1,6 @@
 {
   "name": "node-net",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "web framework",
   "main": "index.js",
   "scripts": {
