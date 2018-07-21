@@ -53,10 +53,10 @@ class Application extends EventEmitter{
         const fn = this.middlewares[++ index]
         try {
           if(fn) {
-            await fn.call(ctx, next)
+            await fn.apply(ctx, [next, ctx])
 
             if (++ range < this.middlewares.length) next()  // Without using next, auto append
-            else Promise.all(this.callbacks.map(fn => fn.call(ctx))).then(respond.call(ctx))
+            else Promise.all(this.callbacks.map(fn => fn.call(ctx, ctx))).then(respond.call(ctx, ctx))
           }
         }
         catch (e) {
@@ -78,12 +78,16 @@ class Application extends EventEmitter{
 
   use(fn, cb) {
     if (typeof fn !== 'function') throw new Error('Middleware must be a function!')
-    if (isArrow(fn)) throw new Error('Middleware can not use arrow function!')
+    if (isArrow(fn)) console.warn('\x1B[31m%s\x1B[39m\x1B[33m%s\x1B[39m\x1B[32m%s\x1B[39m',
+      'Middleware has used arrow function, ','please notice "this" keywords,\n',
+      'or you can use "context" after the "next" parameter')
     this.middlewares.push(fn)
 
     if (cb){
       if (typeof fn !== 'function') throw new Error('Callback must be a function!')
-      if (isArrow(cb)) throw new Error('Callback can not use arrow function!')
+      if (isArrow(cb)) console.warn('\x1B[31m%s\x1B[39m\x1B[33m%s\x1B[39m\x1B[32m%s\x1B[39m',
+        'Callback has used arrow function, ','please notice "this" keywords,\n',
+        'or you can use "context" after the "next" parameter')
       this.callbacks.unshift(cb)
     }
 
