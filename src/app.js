@@ -5,7 +5,7 @@ const http = require('http')
 const cookies = require('cookies')
 const statuses = require('statuses')
 
-const context = require('./context')
+const context = require('./ctx')
 const request = require('./req')
 const response = require('./res')
 
