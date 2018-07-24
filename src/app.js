@@ -49,15 +49,15 @@ class Application extends EventEmitter{
       let index = -1
       let range = 0
 
-      const next = async() => {
+      const next = async () => {
         const fn = this.middlewares[++ index]
-        try {
-          if(fn) {
-            await fn.apply(ctx, [next, ctx])
+        if (!fn) return Promise.resolve()
 
-            if (++ range < this.middlewares.length) next()  // Without using next, auto append
-            else Promise.all(this.callbacks.map(fn => fn.call(ctx, ctx))).then(respond.call(ctx, ctx))
-          }
+        try {
+          await fn.apply(ctx, [next, ctx])
+
+          if (++ range < this.middlewares.length) next()  // Without using next, auto append
+          else Promise.all(this.callbacks.map(fn => fn.call(ctx, ctx))).then(respond.call(ctx, ctx))
         }
         catch (e) {
           ctx.onerror(e)

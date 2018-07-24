@@ -8,7 +8,6 @@ const proto = module.exports = {
   onerror(err) {
     if (!err) return
     if (!(err instanceof Error)) err = new Error(util.format('non-error thrown: %j', err))
-    this.app.emit('error', err, this)
     
     if (this.headerSent) return
 
@@ -29,6 +28,8 @@ const proto = module.exports = {
 
     this.length = Buffer.byteLength(msg)
     res.end(msg)
+
+    this.app.emit('error', err)
 	}
 }
 

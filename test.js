@@ -7,9 +7,9 @@ app.use(async function (next) {
     console.log(this.url, 'm1')
     this.cookies.set('55', 555)
     setTimeout(() => {
-        assert(this, app, 'should equal')
+        // assert.equal(this, app, 'this and app should equal')
     })
-    // await next()
+    await next()
     console.log('m1 await then')
 }, function () {
     console.log('m1 end\n')
@@ -30,7 +30,7 @@ app.use(function (next) {
 // m3
 app.use(async function (next) {
     console.log('m3')
-    await next()
+    // await next()
     console.log('m3-end')
 }, function() {
     console.log('m3 callback begin')
@@ -39,7 +39,7 @@ app.use(async function (next) {
 app.keys = '12345'
 app.on('error', (err) => {
     console.log('err: ' + err)
-    throw new Error(err)
+    // throw new Error(err)
 })
 
 app.listen(3000, () => {
