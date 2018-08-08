@@ -19,10 +19,6 @@ class Application extends EventEmitter{
     this.response = Object.create(response)
   }
 
-  onerror(err) {
-    console.error('err:', err)
-  }
-
   createContext(req, res) {
     const context = Object.create(this.context)
 
@@ -43,7 +39,7 @@ class Application extends EventEmitter{
   }
 
   callback() {
-    if (!this.listenerCount('error')) this.on('error', this.onerror)
+    if (!this.listenerCount('error')) this.on('error', console.log)
 
     return (req, res) => {
       let index = -1
