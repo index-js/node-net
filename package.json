@@ -21,10 +21,6 @@
     "url": "https://github.com/index-js/node-net/issues"
   },
   "homepage": "http://jslang.org",
-  "dependencies": {
-    "cookies": "^0.7.1",
-    "delegates": "^1.0.0",
-    "statuses": "^1.5.0"
-  },
+  "dependencies": {},
   "devDependencies": {}
 }
